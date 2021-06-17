@@ -59,11 +59,14 @@
             app:layout_constraintTop_toTopOf="@id/video_container"
             />
 
-        <WebView
-            android:id="@+id/web_view"
+        <TextView
+            android:id="@+id/txt_contents"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:overScrollMode="never"
+            android:text="CONTENTS"
+            android:textColor="@color/black"
+            android:textSize="50dp"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/video_container"/>
 

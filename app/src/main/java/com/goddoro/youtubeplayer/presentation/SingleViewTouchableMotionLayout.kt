@@ -4,6 +4,7 @@ package com.goddoro.youtubeplayer.presentation
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -17,6 +18,10 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
     }
     private val viewRect = Rect()
     private var touchStarted = false
+
+    private var xCoordinate = 0f
+    private var yCoordinate = 0f
+    private var isTransitionProcessing = false
     private val transitionListenerList = mutableListOf<TransitionListener?>()
 
     init {
@@ -25,10 +30,13 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
             }
 
             override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+
                 touchStarted = false
+                isTransitionProcessing = false
             }
 
             override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                isTransitionProcessing = true
             }
 
             override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
@@ -52,6 +60,7 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
             override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
             }
         })
+
     }
 
     override fun setTransitionListener(listener: TransitionListener?) {
@@ -69,17 +78,39 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
         }
     })
 
+//    override fun onInterceptTouchEvent(event: MotionEvent?): Boolean {
+//
+//        if ( event?.action == MotionEvent.ACTION_MOVE){
+//            return super.onInterceptTouchEvent(event)
+//        }
+//        return false
+//    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
+
+
         when (event.actionMasked) {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                Log.d("MainPlayerFragment","ACTION_UP $touchStarted")
+                val xDistance = Math.abs(xCoordinate - event.x)
+                val yDistance = Math.abs(yCoordinate - event.y)
+                if (touchStarted && !isTransitionProcessing && xDistance < 100 && yDistance < 100) this.transitionToEnd()
                 touchStarted = false
+                isTransitionProcessing = false
                 return super.onTouchEvent(event)
+            }
+            MotionEvent.ACTION_DOWN -> {
+                xCoordinate = event.x
+                yCoordinate = event.y
             }
         }
         if (!touchStarted) {
             viewToDetectTouch.getHitRect(viewRect)
             touchStarted = viewRect.contains(event.x.toInt(), event.y.toInt())
+
         }
+
         return touchStarted && super.onTouchEvent(event)
     }
+
 }
