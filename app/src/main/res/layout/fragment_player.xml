@@ -2,13 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="vm"
-            type="kr.co.kbs.kplayer.presentation.player.PlayerViewModel" />
-
-    </data>
 
 
     <kr.co.kbs.kplayer.presentation.player.SingleViewTouchableMotionLayout
