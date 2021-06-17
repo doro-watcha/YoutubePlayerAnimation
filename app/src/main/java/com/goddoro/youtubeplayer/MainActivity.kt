@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import com.goddoro.youtubeplayer.databinding.ActivityMainBinding
 import com.goddoro.youtubeplayer.presentation.PlayerFragment
+import com.goddoro.youtubeplayer.presentation.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_player.*
 
@@ -17,7 +19,8 @@ class MainActivity : AppCompatActivity() {
 
     private val fragment1 : MainFragment = MainFragment.newInstance()
     private val fragment2: PlayerFragment = PlayerFragment.newInstance()
-
+    private val fragment3 : ProfileFragment = ProfileFragment.newInstance()
+    private var willShow : Fragment = fragment1
     var curMainMenu = R.id.gnb_home
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         val onNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
 
-                if ( menuItem.itemId != R.id.gnb_video) curMainMenu = menuItem.itemId
+                if ( menuItem.itemId != R.id.gnb_video) changeFragment(menuItem.itemId)
 
                 when (menuItem.itemId) {
                     R.id.gnb_home -> {
@@ -93,9 +96,28 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun changeFragment( menuId : Int ) {
+
+        curMainMenu = menuId
+
+        willShow = if (menuId == R.id.gnb_profile) {
+            fragment3
+        }
+        else {
+            fragment1
+        }
+
+        supportFragmentManager.beginTransaction()
+            .hide(fragment1)
+            .hide(fragment3)
+            .show(willShow)
+            .commit()
+    }
+
     private fun initFragment() {
 
         supportFragmentManager.beginTransaction().add(R.id.container, fragment1,"1").show(fragment1).commit()
+        supportFragmentManager.beginTransaction().add(R.id.container, fragment3,"3").hide(fragment3).commit()
 
     }
 
