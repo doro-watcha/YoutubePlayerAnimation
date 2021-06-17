@@ -2,6 +2,7 @@ package com.goddoro.youtubeplayer
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import com.goddoro.youtubeplayer.databinding.ActivityMainBinding
 import com.goddoro.youtubeplayer.presentation.PlayerFragment
@@ -9,6 +10,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_player.*
 
 class MainActivity : AppCompatActivity() {
+
+    private val TAG = MainActivity::class.java.simpleName
 
     private lateinit var mBinding : ActivityMainBinding
 
@@ -35,8 +38,9 @@ class MainActivity : AppCompatActivity() {
     private fun loadPlayerFragment() {
 
         if ( supportFragmentManager.findFragmentById(R.id.playerContainer) == null) {
+            Log.d(TAG, "New Load")
             supportFragmentManager.beginTransaction()
-                .add(R.id.playerContainer, fragment2, "3")
+                .add(R.id.playerContainer, fragment2, "2")
                 .show(fragment2).commit()
         }
         else {

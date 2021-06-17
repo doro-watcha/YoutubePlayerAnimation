@@ -7,13 +7,19 @@ import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.fragment.app.Fragment
 import com.goddoro.youtubeplayer.MainActivity
+import com.goddoro.youtubeplayer.R
 import com.goddoro.youtubeplayer.databinding.FragmentPlayerBinding
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.abs
 
 class PlayerFragment : Fragment(){
 
     private lateinit var mBinding : FragmentPlayerBinding
+
+    private lateinit var player : Player
 
 
     override fun onCreateView(
@@ -28,7 +34,21 @@ class PlayerFragment : Fragment(){
 
         mBinding.lifecycleOwner = viewLifecycleOwner
         setupTransition()
+        initPlayer()
 
+    }
+
+    private fun initPlayer () {
+
+        player = SimpleExoPlayer.Builder(requireContext()).build()
+
+        mBinding.playerView.player = player
+
+        val mediaItem =
+            MediaItem.fromUri("https://cdn.onesongtwoshows.com/video/okt7ne01ywn_1602269794509.mp4")
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
     }
 
     private fun setupTransition() {
@@ -43,6 +63,7 @@ class PlayerFragment : Fragment(){
                 }
 
                 override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
+                    if ( mBinding.playerMotionLayout.currentState == R.id.expanded ) motionLayout?.setTransition(R.id.clickArrow)
                 }
 
                 override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
@@ -53,6 +74,12 @@ class PlayerFragment : Fragment(){
             })
             transitionToEnd()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        player.release()
     }
 
     companion object {
