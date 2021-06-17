@@ -1,33 +1,30 @@
-package com.goddoro.youtubeplayer.presentation
+package com.goddoro.youtubeplayer
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.goddoro.youtubeplayer.databinding.FragmentPlayerBinding
+import com.goddoro.youtubeplayer.databinding.FragmentMainBinding
 
-class PlayerFragment : Fragment(){
 
-    private lateinit var mBinding : FragmentPlayerBinding
+class MainFragment : Fragment() {
 
+    private lateinit var mBinding : FragmentMainBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentPlayerBinding.inflate(inflater, container,false).also { mBinding = it }.root
+    ): View = FragmentMainBinding.inflate(inflater,container,false).also {mBinding = it }.root
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         mBinding.lifecycleOwner = viewLifecycleOwner
-
     }
-
     companion object {
-
-        fun newInstance() = PlayerFragment()
+        fun newInstance() = MainFragment()
     }
 }

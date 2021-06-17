@@ -1,77 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <variable
-            name="vm"
-            type="kr.co.kbs.kplayer.presentation.player.PlayerViewModel" />
-
-    </data>
+<layout>
 
 
-    <kr.co.kbs.kplayer.presentation.player.SingleViewTouchableMotionLayout
-        android:id="@+id/playerMotionLayout"
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/mainMotionLayout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_collapseMode="parallax"
-        android:background="@android:color/transparent"
-        app:layoutDescription="@xml/player_motion">
+        app:layoutDescription="@xml/main_motion"
+        tools:context=".MainActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/video_container"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="@color/white"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/player_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:resize_mode="zoom"
-            app:use_controller="false"
-            app:surface_type="texture_view"
-            app:layout_constraintTop_toTopOf="@id/video_container"
-            app:layout_constraintBottom_toBottomOf="@id/video_container"
-            app:layout_constraintStart_toStartOf="@id/video_container"
-            app:layout_constraintEnd_toEndOf="@id/video_container" />
-
-        <ImageView
-            android:id="@+id/image_play"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="16dp"
-            android:alpha="0"
-            app:srcCompat="@drawable/btn_play"
-            app:layout_constraintEnd_toStartOf="@id/video_container"
-            app:layout_constraintTop_toTopOf="@id/video_container"
-            app:layout_constraintBottom_toBottomOf="@id/video_container"
-            />
-
-        <ImageView
-            android:id="@+id/image_clear"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="16dp"
-            android:alpha="0"
-            app:srcCompat="@drawable/close_btn"
-            app:layout_constraintEnd_toEndOf="@id/video_container"
-            app:layout_constraintBottom_toBottomOf="@id/video_container"
-            app:layout_constraintTop_toTopOf="@id/video_container"
-            />
-
-        <WebView
-            android:id="@+id/web_view"
+        <FrameLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:overScrollMode="never"
+            app:layout_constraintTop_toBottomOf="@+id/topTab"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView">
+
+            <View
+                android:id="@+id/backgroundDim"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="10dp" />
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:id="@+id/playerContainer"
+            android:layout_width="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="match_parent"/>
+
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/global_navigation_bar"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/video_container"/>
+            android:background="@color/gnb_background"
+            app:labelVisibilityMode="labeled"
+            android:animateLayoutChanges="true"
+            app:itemIconTint="@drawable/gnb_tab_text_color"
+            app:itemTextColor="@drawable/gnb_tab_text_color"
+            app:itemTextAppearanceActive="@style/navTextActive"
+            app:itemTextAppearanceInactive="@style/navTextInactive"
+            app:itemIconSize="22dp" />
 
-    </kr.co.kbs.kplayer.presentation.player.SingleViewTouchableMotionLayout>
-
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 </layout>

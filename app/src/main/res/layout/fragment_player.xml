@@ -2,9 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+    </data>
 
 
-    <kr.co.kbs.kplayer.presentation.player.SingleViewTouchableMotionLayout
+    <com.goddoro.youtubeplayer.presentation.SingleViewTouchableMotionLayout
         android:id="@+id/playerMotionLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -50,7 +53,7 @@
             android:layout_height="32dp"
             android:layout_marginEnd="16dp"
             android:alpha="0"
-            app:srcCompat="@drawable/close_btn"
+            app:srcCompat="@drawable/btn_close"
             app:layout_constraintEnd_toEndOf="@id/video_container"
             app:layout_constraintBottom_toBottomOf="@id/video_container"
             app:layout_constraintTop_toTopOf="@id/video_container"
@@ -64,7 +67,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/video_container"/>
 
-    </kr.co.kbs.kplayer.presentation.player.SingleViewTouchableMotionLayout>
+
+    </com.goddoro.youtubeplayer.presentation.SingleViewTouchableMotionLayout>
 
 
 </layout>
