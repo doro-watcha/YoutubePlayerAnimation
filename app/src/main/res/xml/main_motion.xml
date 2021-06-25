@@ -41,6 +41,9 @@
         </KeyFrameSet>
     </Transition>
 
+
+
+
     <ConstraintSet android:id="@+id/expanded" >
 
 
@@ -74,4 +77,5 @@
             android:layout_height="0dp"/>
 
     </ConstraintSet>
+
 </MotionScene>

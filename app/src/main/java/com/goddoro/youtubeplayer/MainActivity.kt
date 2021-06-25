@@ -1,13 +1,14 @@
 package com.goddoro.youtubeplayer
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.goddoro.youtubeplayer.databinding.ActivityMainBinding
 import com.goddoro.youtubeplayer.presentation.PlayerFragment
 import com.goddoro.youtubeplayer.presentation.ProfileFragment
+import com.goddoro.youtubeplayer.utils.debugE
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_player.*
 
@@ -42,17 +43,22 @@ class MainActivity : AppCompatActivity() {
 
         if ( supportFragmentManager.findFragmentById(R.id.playerContainer) == null) {
             Log.d(TAG, "New Load")
+
             supportFragmentManager.beginTransaction()
                 .add(R.id.playerContainer, fragment2, "2")
                 .show(fragment2).commit()
+
+
         }
         else {
+            debugE(TAG, "FUCK")
             (supportFragmentManager.findFragmentById(R.id.playerContainer)).also {
                 it as PlayerFragment
 
-                if (it.playerMotionLayout.currentState == R.id.collapsed)
+                if (it.playerMotionLayout.currentState == R.id.collapsed) {
+                    it.playerMotionLayout.setTransition(R.id.to_expanded)
                     it.playerMotionLayout.transitionToEnd()
-                else {
+                } else {
 
                 }
             }
@@ -137,13 +143,19 @@ class MainActivity : AppCompatActivity() {
             when (it.playerMotionLayout.currentState) {
                 R.id.expanded -> it.playerMotionLayout.transitionToStart()
                 R.id.collapsed -> {
-                    supportFragmentManager.beginTransaction()
-                        .remove(fragment2)
-                        .commit()
+                    it.playerMotionLayout.setTransition(R.id.to_removed)
+                    it.playerMotionLayout.transitionToEnd()
                 }
                 else -> super.onBackPressed()
             }
         }
+    }
+
+    private fun removePlayerFragment() {
+        supportFragmentManager.beginTransaction()
+            .remove(fragment2)
+            .commit()
+
     }
 
 

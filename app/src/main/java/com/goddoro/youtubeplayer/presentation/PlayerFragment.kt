@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.goddoro.youtubeplayer.MainActivity
 import com.goddoro.youtubeplayer.R
 import com.goddoro.youtubeplayer.databinding.FragmentPlayerBinding
+import com.goddoro.youtubeplayer.utils.debugE
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -17,7 +18,8 @@ import kotlin.math.abs
 
 class PlayerFragment : Fragment(){
 
-    private lateinit var mBinding : FragmentPlayerBinding
+    private val TAG = PlayerFragment::class.java.simpleName
+    private lateinit var mBinding: FragmentPlayerBinding
 
     private lateinit var player : Player
 
@@ -44,11 +46,25 @@ class PlayerFragment : Fragment(){
 
         mBinding.playerView.player = player
 
+        player.repeatMode = Player.REPEAT_MODE_ALL
+
         val mediaItem =
             MediaItem.fromUri("https://cdn.onesongtwoshows.com/video/okt7ne01ywn_1602269794509.mp4")
         player.setMediaItem(mediaItem)
         player.prepare()
         player.play()
+
+        mBinding.imgDownArrow.setOnClickListener {
+            mBinding.playerMotionLayout.setTransition(R.id.to_expanded)
+            mBinding.playerMotionLayout.transitionToStart()
+        }
+
+//        mBinding.videoContainer.setOnClickListener {
+//            if (mBinding.playerMotionLayout.currentState == R.id.collapsed) {
+//                mBinding.playerMotionLayout.setTransition(R.id.to_expanded)
+//                mBinding.playerMotionLayout.transitionToEnd()
+//            }
+//        }
     }
 
     private fun setupTransition() {
@@ -57,21 +73,42 @@ class PlayerFragment : Fragment(){
 
             setTransitionListener(object : MotionLayout.TransitionListener {
                 override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {
-                    (activity as MainActivity).also {
-                        it.mainMotionLayout.progress = abs(progress)
+                    if (endId != R.id.removed) {
+                        (activity as MainActivity).also {
+                            it.mainMotionLayout.progress = abs(progress)
+                        }
                     }
+                    debugE(TAG, progress)
                 }
 
                 override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-                    if ( mBinding.playerMotionLayout.currentState == R.id.expanded ) motionLayout?.setTransition(R.id.clickArrow)
+
+                    val progress: Float = (activity as MainActivity).mainMotionLayout.progress
+                    if (progress != 0f && currentId == R.id.collapsed) {
+                        (activity as MainActivity).mainMotionLayout.progress = 0f
+                    }
+
+                    if (currentId == R.id.removed) {
+                        debugE(TAG, "REMOVE")
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .remove(this@PlayerFragment).commit()
+                    }
                 }
 
                 override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
                 }
 
-                override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                override fun onTransitionTrigger(
+                    p0: MotionLayout?,
+                    p1: Int,
+                    p2: Boolean,
+                    p3: Float
+                ) {
+
+                    debugE(TAG, "Trigerred!")
                 }
             })
+            setTransition(R.id.to_expanded)
             transitionToEnd()
         }
     }

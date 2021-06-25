@@ -94,7 +94,11 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
                 Log.d("MainPlayerFragment","ACTION_UP $touchStarted")
                 val xDistance = Math.abs(xCoordinate - event.x)
                 val yDistance = Math.abs(yCoordinate - event.y)
-                if (touchStarted && !isTransitionProcessing && xDistance < 100 && yDistance < 100) this.transitionToEnd()
+                if (touchStarted && !isTransitionProcessing && xDistance < 5 && yDistance < 5) {
+              
+                    this.setTransition(R.id.to_expanded)
+                    this.transitionToEnd()
+                }
                 touchStarted = false
                 isTransitionProcessing = false
                 return super.onTouchEvent(event)
