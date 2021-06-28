@@ -1,6 +1,11 @@
 package com.goddoro.youtubeplayer.presentation
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +14,7 @@ import androidx.fragment.app.Fragment
 import com.goddoro.youtubeplayer.MainActivity
 import com.goddoro.youtubeplayer.R
 import com.goddoro.youtubeplayer.databinding.FragmentPlayerBinding
+import com.goddoro.youtubeplayer.service.PlayerService
 import com.goddoro.youtubeplayer.utils.debugE
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -21,7 +27,28 @@ class PlayerFragment : Fragment(){
     private val TAG = PlayerFragment::class.java.simpleName
     private lateinit var mBinding: FragmentPlayerBinding
 
-    private lateinit var player : Player
+    private lateinit var playerService: PlayerService
+    private var mBound : Boolean = false
+
+    var usePlayerBackground = false
+
+
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+            val binder = p1 as PlayerService.PlayerBinder
+
+            debugE(TAG, "onServiceConnected")
+            playerService = binder.getService()
+            mBound = true
+            initPlayer()
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            debugE(TAG, "onServiceDisconnected")
+            mBound = false
+        }
+    }
 
 
     override fun onCreateView(
@@ -36,35 +63,22 @@ class PlayerFragment : Fragment(){
 
         mBinding.lifecycleOwner = viewLifecycleOwner
         setupTransition()
-        initPlayer()
 
     }
 
     private fun initPlayer () {
 
-        player = SimpleExoPlayer.Builder(requireContext()).build()
+        debugE(TAG, "init Player")
 
-        mBinding.playerView.player = player
-
-        player.repeatMode = Player.REPEAT_MODE_ALL
-
-        val mediaItem =
-            MediaItem.fromUri("https://cdn.onesongtwoshows.com/video/okt7ne01ywn_1602269794509.mp4")
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.play()
+        mBinding.playerView.player = playerService.player
 
         mBinding.imgDownArrow.setOnClickListener {
             mBinding.playerMotionLayout.setTransition(R.id.to_expanded)
             mBinding.playerMotionLayout.transitionToStart()
         }
 
-//        mBinding.videoContainer.setOnClickListener {
-//            if (mBinding.playerMotionLayout.currentState == R.id.collapsed) {
-//                mBinding.playerMotionLayout.setTransition(R.id.to_expanded)
-//                mBinding.playerMotionLayout.transitionToEnd()
-//            }
-//        }
+        playerService.play()
+
     }
 
     private fun setupTransition() {
@@ -113,10 +127,30 @@ class PlayerFragment : Fragment(){
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        debugE(TAG, "onStart")
+
+        Intent(requireActivity(), PlayerService::class.java).also { intent ->
+            requireActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (usePlayerBackground) {
+            playerService.pause()
+        }
+
+    }
+
+
+
     override fun onDestroy() {
         super.onDestroy()
 
-        player.release()
     }
 
     companion object {
