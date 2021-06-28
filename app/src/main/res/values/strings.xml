@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">YoutubePlayer</string>
+
+    <string name="channel_name">youtube_player</string>
+    <string name="channel_id">youtube_player_id</string>
+    <string name="channel_description">youtube_player_description</string>
+    <string name="notification_content_title">동영상 백그라운드 재생</string>
+    <string name="notification_content_text">다양한 콘텐츠를 즐기세요.</string>
 </resources>

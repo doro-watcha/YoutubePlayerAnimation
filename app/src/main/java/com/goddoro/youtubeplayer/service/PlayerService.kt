@@ -1,11 +1,16 @@
 package com.goddoro.youtubeplayer.service
 
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Binder
 import android.os.IBinder
+import com.goddoro.youtubeplayer.CommonConst.ACTION_PLAYER_PAUSE
+import com.goddoro.youtubeplayer.CommonConst.ACTION_PLAYER_PLAY
+import com.goddoro.youtubeplayer.utils.NotificationUtil
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 
@@ -18,6 +23,8 @@ class PlayerService : Service() {
     private val binder = PlayerBinder()
 
     lateinit var player : SimpleExoPlayer
+
+    val notificationUtil = NotificationUtil(this)
 
     override fun onBind(p0: Intent?): IBinder {
 
@@ -36,19 +43,37 @@ class PlayerService : Service() {
     fun getPlayerFromService() = player
 
     fun play() {
-        //notificationUtil.createNotificationChannel()
         player.play()
+        notificationUtil.updateNotification(notificationUtil.getNotificationBuilder(true))
     }
 
     fun pause() {
-
         player.pause()
+        notificationUtil.updateNotification(notificationUtil.getNotificationBuilder(false))
     }
+
 
 
     inner class PlayerBinder : Binder() {
 
         fun getService(): PlayerService = this@PlayerService
+
+    }
+
+    val receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+
+            when (intent.action) {
+                ACTION_PLAYER_PLAY -> {
+                    play()
+                }
+                ACTION_PLAYER_PAUSE -> {
+                    pause()
+                }
+
+            }
+
+        }
 
     }
 
