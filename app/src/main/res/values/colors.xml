@@ -13,5 +13,6 @@
     <color name="gnb_background">#f9f9f9</color>
     <color name="gnb_divider">#d8d8d8</color>
     <color name="semiTransparentBlack">#6e232323</color>
+    <color name="solid_red">#f00</color>
 
 </resources>

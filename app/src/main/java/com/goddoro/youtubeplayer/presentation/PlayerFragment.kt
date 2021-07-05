@@ -72,10 +72,12 @@ class PlayerFragment : Fragment(){
 
         mBinding.playerView.player = playerService.player
 
-        mBinding.imgDownArrow.setOnClickListener {
-            mBinding.playerMotionLayout.setTransition(R.id.to_expanded)
-            mBinding.playerMotionLayout.transitionToStart()
-        }
+//        mBinding.playerView.controllerShowTimeoutMs = 5000
+//
+//        mBinding.playerView.controller.setOnClickListener {
+//            mBinding.playerMotionLayout.setTransition(R.id.to_expanded)
+//            mBinding.playerMotionLayout.transitionToStart()
+//        }
 
         playerService.play()
 
